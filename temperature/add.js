@@ -10,13 +10,18 @@ app.use(
 )
 
 const add = (req, res) => {
-    const temperature = req.body;
+    const data  = ({
+        time_stamp = req.body.time_stamp,
+        temperature = req.body.temperature,
+        status = req.body.temperature
+    });
     const test = async function () {
-        await Temperature.addTemperature(temperature);
+        await Temperature.addTemperature(data);
         res.json({
             data : await Temperature.getLastTemperature()
         })
     }
+    test();
 }
 
 module.exports = {add}

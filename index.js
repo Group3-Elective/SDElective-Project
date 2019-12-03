@@ -5,6 +5,7 @@ const port = process.env.PORT || 3000;
 const addTemperature = require('./temperature/add')
 const retrieveTemperatures = require('./temperature/retrieve')
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -23,8 +24,11 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log("we're connected")
 });
-
-app.use(express.static('../index'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(express.static('scripts'));
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/educator.html');
@@ -37,6 +41,7 @@ app.get('/student', function (req, res) {
 });
 
 app.post('/temperature', (req, res) => {
+  console.log(req.body.temperature)
     addTemperature.add(req, res);
 })
 
