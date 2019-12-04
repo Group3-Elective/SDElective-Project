@@ -31,13 +31,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('scripts'));
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/educator.html');
-});
-app.get('/educator', function (req, res) {
-    res.sendFile(__dirname + '/educator.html');
-});
-app.get('/student', function (req, res) {
-    res.sendFile(__dirname + '/student.html');
+    res.sendFile(__dirname + '/index.html');
 });
 
 app.post('/temperature', (req, res) => {

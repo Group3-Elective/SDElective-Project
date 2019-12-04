@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 var Schema = new mongoose.Schema({
-    time_stamp: { type: String, required: true, unique: true },
+    time_stamp: { type: String, required: true},
     temperature: { type: String, required: true },
     status: { type: String, required: true }
 });
@@ -13,7 +13,7 @@ Schema.statics.addTemperature = async function (temperature) {
 }
 
 Schema.statics.getTemperatures = async function () {
-    return await this.find();
+    return await this.find().sort({ _id: -1 });
 }
 
 Schema.statics.getLastTemperature = async function () {
