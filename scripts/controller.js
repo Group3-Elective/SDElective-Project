@@ -5,7 +5,7 @@ $(document).ready(function () {
 	retrieve();
 	function addRow(element) {
 		rowNumber++;
-		$("tbody").append("<tr class='danger'><td>" + element.time_stamp + "<td>" + element.temperature + "</tr>")
+		$("tbody").append("<tr class='danger'><td>" + element.time_stamp + "<td>" + element.temperature + "	</tr>")
 	}
 
 	function retrieve() {
@@ -33,17 +33,17 @@ $(document).ready(function () {
 		if (topic == "aspire/750") {
 			var temperature = payload.toString().substring(15, 19)
 			var time_stamp = payload.toString().substring(34, 73)
-			$('.btn').val(temperature)
+			$('.btn').val(temperature + " degrees Celsius")
 			if ( temperature >= 25) {
 				$.ajax({
 					type: "post",
 					url: "/temperature",
-					data : {"time_stamp" : time_stamp,"temperature" : temperature, "status" : "hot"},
+					data : {"time_stamp" : time_stamp,"temperature" : temperature + " &#x2103;", "status" : "hot"},
 					success: function (response) {
 						console.log("success")
 						Swal.fire({
-							type: "error",
-							title: 'ERROR',
+							type: "warning",
+							title: 'WARNING',
 							text: "Room temperature is too hot!"
 						})
 						$('tbody tr').remove()

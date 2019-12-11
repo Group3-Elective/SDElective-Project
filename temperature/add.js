@@ -12,7 +12,7 @@ app.use(
 const add = (req, res) => {
     const data  = {
         time_stamp : req.body.time_stamp,
-        temperature : req.body.temperature + " degrees C",
+        temperature : req.body.temperature,
         status : req.body.status
     };
     const test = async function () {
