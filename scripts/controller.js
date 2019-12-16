@@ -1,23 +1,27 @@
 // basic functionalities
 
 $(document).ready(function () {
-	var rowNumber = 1;
+	$(".alert").hide()
 	retrieve();
 	function addRow(element) {
-		rowNumber++;
-		$("tbody").append("<tr class='danger'><td>" + element.time_stamp + "<td>" + element.temperature + "	</tr>")
+		if (element.temperature >= 25) {
+			$("tbody").append("<tr class='danger'><td>" + element.time_stamp + "<td>" + element.temperature + "	</tr>")
+		}
+		else {
+			$("tbody").append("<tr class='primary'><td>" + element.time_stamp + "<td>" + element.temperature + " </tr>")
+		}
 	}
 
 	function retrieve() {
 		$.ajax({
 			type: "get",
 			url: "/temperature",
-			success : function(response) {
+			success: function (response) {
 				response.forEach(function (element) {
 					addRow(element);
 				})
 			},
-			error : function (error) {
+			error: function (error) {
 				console.log("error")
 			}
 		})
@@ -27,41 +31,30 @@ $(document).ready(function () {
 	client.on("connect", function () {
 		console.log("Successfully connected");
 	})
-	client.subscribe('aspire/750');
+	client.subscribe('aspire/device');
 	client.on("message", function (topic, payload) {
+		$(".alert").show()
+
 		console.log("Received { topic:" + topic + "; payload: " + payload + " }");
-		if (topic == "aspire/750") {
-			var temperature = payload.toString().substring(15, 19)
-			var time_stamp = payload.toString().substring(34, 73)
-			$('.btn').val(temperature + " degrees Celsius")
-			if ( temperature >= 25) {
-				$.ajax({
-					type: "post",
-					url: "/temperature",
-					data : {"time_stamp" : time_stamp,"temperature" : temperature + " &#x2103;", "status" : "hot"},
-					success: function (response) {
-						console.log("success")
-						Swal.fire({
-							type: "warning",
-							title: 'WARNING',
-							text: "Room temperature is too hot!"
-						})
-						$('tbody tr').remove()
-						rowNumber = 0;
-						retrieve();
-					},
-					error: function (error) {
-						console.log("error")
-					}
-				})
-			}
-			// else if (temperature < 25){
-			// 	Swal.fire({
-			// 		type: "success",
-			// 		title: 'SUCCESS',
-			// 		text: "Room is in normal temperature."
-			// 	})
-			// }
+		if (topic == "aspire/device") {
+			payload = JSON.parse(payload)
+			var temperature = payload.temperature
+			var time_stamp = payload.timestamp
+			$("#current").text(temperature)
+			console.log(temperature, time_stamp)
+			$.ajax({
+				type: "post",
+				url: "/temperature",
+				data: { "time_stamp": time_stamp, "temperature": temperature + " &#x2103;", "status": "hot" },
+				success: function (response) {
+					console.log("success")
+					$('tbody tr').remove()
+					retrieve();
+				},
+				error: function (error) {
+					console.log("error")
+				}
+			})
 		}
 	})
 
