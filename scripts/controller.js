@@ -4,11 +4,11 @@ $(document).ready(function () {
 	$(".alert").hide()
 	retrieve();
 	function addRow(element) {
-		if (element.temperature >= 25) {
-			$("tbody").append("<tr class='danger'><td>" + element.time_stamp + "<td>" + element.temperature + "	</tr>")
+		if (element.status == "cool") {
+			$("tbody").append("<tr class='info'><td>" + element.time_stamp + "<td>" + element.temperature + "	</tr>")
 		}
 		else {
-			$("tbody").append("<tr class='primary'><td>" + element.time_stamp + "<td>" + element.temperature + " </tr>")
+			$("tbody").append("<tr class='danger'><td>" + element.time_stamp + "<td>" + element.temperature + " </tr>")
 		}
 	}
 
@@ -35,17 +35,28 @@ $(document).ready(function () {
 	client.on("message", function (topic, payload) {
 		$(".alert").show()
 
-		console.log("Received { topic:" + topic + "; payload: " + payload + " }");
+		// console.log("Received { topic:" + topic + "; payload: " + payload + " }");
 		if (topic == "aspire/device") {
 			payload = JSON.parse(payload)
 			var temperature = payload.temperature
 			var time_stamp = payload.timestamp
+			var status;
 			$("#current").text(temperature)
 			console.log(temperature, time_stamp)
+			if (temperature >= 25) {
+				$('#status').text("Comlab Temperature is Hot!")
+				$('.alert').addClass("alert-danger")
+				status = "hot";
+			}
+			else {
+				$('#status').text("Comlab Temperature is Cool!")
+				$('.alert').addClass("alert-primary")
+				status = "cool";
+			}
 			$.ajax({
 				type: "post",
 				url: "/temperature",
-				data: { "time_stamp": time_stamp, "temperature": temperature + " &#x2103;", "status": "hot" },
+				data: { "time_stamp": time_stamp, "temperature": temperature + " &#x2103;", "status": status },
 				success: function (response) {
 					console.log("success")
 					$('tbody tr').remove()

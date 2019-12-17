@@ -12,6 +12,12 @@
 
 
     <style>
+        body {
+            background-image: url("background.jpg");
+            background-repeat: no-repeat;
+            background-attachment: scroll;
+            background-size: cover;
+        }
         tr,
         td {
             width: 30px;
@@ -46,6 +52,11 @@
             width: 60%;
             font-size: 18px;
             margin: 40px;
+            opacity: 0.92;
+        }
+
+        .card:hover {
+            opacity: 1;
         }
 
         .card-body {
@@ -58,11 +69,12 @@
     <center>
         <div class="card text-center border-info">
             <div class="card-header">
-                <h2>PN Comlab Temperature</h2>
+                <img src="logo.png" width="50"><h2>PN Comlab Temperature</h2>
             </div>
             <div class="card-body text-info">
-                <div class="alert alert-danger" role="alert">
-                  <span id="current"></span> &#x2103; Comlab Temperature  is High 
+                <div class="alert" role="alert">
+                  <h3><span id="current"></span> &#x2103;</h3>
+                  <span id="status"></span>
                 </div>
             </div>
             <div class="card-footer text-muted">
